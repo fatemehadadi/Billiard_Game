@@ -1,11 +1,11 @@
 //
-// Created by pure on 7/12/18.
+// Created by pure on 7/22/18.
 //
+
 #include "../headers/player.h"
 #include <algorithm>
-Player::Player(string name, float score, int turn, string address="0") {
-    this->name=name;
+Player::Player(int score, string address="0") {
     this->score=score;
-    this->turn=turn;
     this->address=address;
+    this->number=0;
 }
