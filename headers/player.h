@@ -1,19 +1,18 @@
 //
-// Created by pure on 7/12/18.
+// Created by pure on 7/22/18.
 //
 
-#ifndef BILL_PLAYER_H
-#define BILL_PLAYER_H
-
+#ifndef SNOOKER_PLAYER_H
+#define SNOOKER_PLAYER_H
 #include <iostream>
 using namespace std;
 
 class Player{
 public:
-    Player(string, float, int, string);
-    string name;
-    float score;
-    int turn;
+    Player(int, string);
+    int score;
     string address;
+    int number;
 };
-#endif //BILL_PLAYER_H
+
+#endif //SNOOKER_PLAYER_H
