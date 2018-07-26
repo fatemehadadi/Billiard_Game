@@ -7,6 +7,8 @@
 #include "ball.h"
 #include "player.h"
 #include <iostream>
+#include <SFML/Network/Socket.hpp>
+
 using namespace std;
 
 class Game{
@@ -16,6 +18,7 @@ public:
     Ball **ball;
     string status, list;
     int selectedV=0;
+    sf::Socket::Status con_status;
     bool is_your_turn=true, choose_color, choose_dir, choose_side, choose_speed, is_started, is_chosen, is_listening;
     bool bulls_stoped();
     int turn;
