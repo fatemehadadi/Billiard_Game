@@ -21,7 +21,7 @@ Network::Network(Resource *resource, std::string ip) {
     this->ip = ip;
 }
 
-void Network::listen() {
+void Network::listen(Game *game) {
     if (this->is_server) {
         sf::SocketSelector selector;
         selector.add(*this->listener);
@@ -30,7 +30,7 @@ void Network::listen() {
                 if (selector.isReady(*this->listener))
                 {
                     this->socket = new sf::TcpSocket;
-                    this->listener->accept(*this->socket);
+                    game->con_status=this->listener->accept(*this->socket);
                 }
         }
 
@@ -40,8 +40,8 @@ void Network::listen() {
 void Network::connect(Game *game) {
     if (not this->is_server){
         this->socket = new sf::TcpSocket;
-        sf::Socket::Status status =this->socket->connect(this->ip, 12345);
-        if (status != sf::Socket::Done)
+        game->con_status =this->socket->connect(this->ip, 12345);
+        if (game->con_status != sf::Socket::Done)
         {
             // error...
             game->status="No player is available";
@@ -64,6 +64,7 @@ void Network::send() {
 void Network::receive() {
     char data[100];
     size_t received;
+    sf::sleep(sf::milliseconds(50));
     this->socket->receive(data, 100, received);
 
     if (received != 0) {
