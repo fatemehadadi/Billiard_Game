@@ -15,15 +15,16 @@ public:
 
     void send();
     void receive();
-    void listen();
+    void listen(Game *);
     void connect(Game *);
     bool is_server;
+    sf::TcpSocket* socket;
+
 
 private:
     Resource* resource;
     std::string ip;
     sf::TcpListener* listener;
-    sf::TcpSocket* socket;
 };
 
 
