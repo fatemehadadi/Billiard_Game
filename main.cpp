@@ -8,9 +8,9 @@
 #include "headers/resource.h"
 #include <iostream>
 using namespace sf;
-void fonc(Network *network) {
+void fonc(Network *network,Game *game) {
     cout<<"started";
-    network->listen();
+    network->listen(game);
 }
 bool quit=false;
 char* get_ip(){
@@ -31,6 +31,8 @@ char* get_ip(){
 void find_list(){
     sf::UdpSocket socket;
     char *name=get_ip();
+    sf::IpAddress a=sf::IpAddress::getPublicAddress();
+    cout<<a;
     char data[100];
     string m=" 12345";
     int t=0;
@@ -57,7 +59,7 @@ int main() {
     Resource* resource = new Resource(&game);
     Network* network;
 
-    sf::Thread listening(&fonc,network);
+    //sf::Thread listening(&fonc,network);
     sf::Thread networklist(&find_list);
     networklist.launch();
     game.status="Welcome To Billiard Game!";
@@ -81,7 +83,8 @@ int main() {
                             game.is_chosen=true;
                             network = new Network(resource);
                             network->is_server=true;
-                            //network->listen();
+                            game.turn=1;
+                            network->listen(&game);
                             game.is_listening= false;
                             game.status="choose your partner:";
                         }
@@ -89,6 +92,7 @@ int main() {
                         if((event.mouseButton.x>250 && event.mouseButton.x<450)&&(event.mouseButton.y>250 && event.mouseButton.y<350)){
                             game.is_chosen=true;
                             game.is_listening=true;
+                            game.turn=-1;
                             game.status="choose your partner:";
                             network = new Network(resource, "127.0.0.1");
                             network->is_server=false;
@@ -107,6 +111,9 @@ int main() {
                         std::cout << "the right button was pressed" << std::endl;
                         std::cout << "mouse x: " << event.mouseButton.x << std::endl;
                         std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                        if(network->is_server){
+                            network->listen(&game);
+                        }
                         if((event.mouseButton.x>300 && event.mouseButton.x<400)&&(event.mouseButton.y>395 && event.mouseButton.y<445)){
                             if(game.status == "No player is available") {
                                 game.is_chosen = false;
@@ -117,8 +124,10 @@ int main() {
                                 game.is_listening=true;
                             }
                             else{
-                                game.is_started=true;
-                                game.status="ready to play!";
+                                if("0.0.0.0"!=network->socket->getRemoteAddress().toString()) {
+                                    game.is_started=true;
+                                    game.status="ready to play!";
+                                }
                             }
                         }
 
@@ -157,11 +166,10 @@ int main() {
             }
         }
         game.move();
-        cout<<"out of move!\n";
-        /*if((game.is_chosen && not_listening )&& network->is_server){
-            listening.launch();
+        if((game.is_chosen && not_listening )&& network->is_server){
+            //listening.launch();
             not_listening=false;
-        }*/
+        }
         if(game.is_started){
             network->send();
             network->receive();
@@ -171,13 +179,12 @@ int main() {
             render_game(&window,game);
         }
         else if(game.is_chosen){ //if is going to find player
-            render_player(&window, &game);
+            render_player(&window, &game,network);
         }
         else{ //if choose to be server or client
-            render_type(&window);
+            render_type(&window,&game);
         }
         window.display();
     }
-    std::cout<<window.o;
     return 0;
 }
