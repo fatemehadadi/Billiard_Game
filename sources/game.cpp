@@ -51,7 +51,7 @@ bool Game::bulls_stoped() {
 }
 void Game::move() { //move the balls or play orders
     if(this->is_started){
-        if(bulls_stoped()){
+        if(bulls_stoped() && this->turn==1){
             if(choose_speed){
 
             }
@@ -61,14 +61,24 @@ void Game::move() { //move the balls or play orders
         }
     }
     else if(this->is_chosen){
-        cout<<"in move\n";
         sf::UdpSocket socket;
 
         // bind the socket to a port
+        sf::SocketSelector bs;
+        bs.add(socket);
+        /*if(bs.wait(sf::milliseconds(5))){
+            if(bs.isReady(socket)){
+                if (socket.bind(12345) != sf::Socket::Done)
+                {
+                    // error...
+                    cout<<"cant bind the port!\n";
+                }
+            }
+        }*/
         if (socket.bind(12345) != sf::Socket::Done)
         {
             // error...
-            cout<<"cant bind the port!";
+            cout<<"cant bind the port!\n";
         }
         sf::IpAddress sender;
         unsigned short port;
@@ -81,7 +91,7 @@ void Game::move() { //move the balls or play orders
                 if (socket.receive(data, 100, received, sender, port) != sf::Socket::Done)
                 {
                     // error...
-                    cout<<"cant receive!";
+                    cout<<"cant receive!\n";
                 }
                 string msg;
                 for(int i=0;data[i]!='\0';i++){
