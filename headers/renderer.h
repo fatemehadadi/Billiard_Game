@@ -9,6 +9,8 @@
 #include <iostream>
 #include <iomanip>
 #include "game.h"
+#include "network.h"
+#include <sstream>
 
 std::string status;
 using namespace sf;
@@ -20,11 +22,15 @@ void background(sf::RenderWindow *window){
     shape.setFillColor(sf::Color::White);
     window->draw(shape);
 }
-void render_type(sf::RenderWindow *window){ //the beginning page //PAGE 1
+void render_type(sf::RenderWindow *window,Game *game){ //the beginning page //PAGE 1
     background(window);
     //status
     sf::Font font;
     if(! font.loadFromFile("arial.ttf")){
+        cout<<"error!";
+    }
+    sf::Font font2;
+    if(! font2.loadFromFile("dam.ttf")){
         cout<<"error!";
     }
     sf::Font font1;
@@ -33,34 +39,35 @@ void render_type(sf::RenderWindow *window){ //the beginning page //PAGE 1
     text.setFont(font1);
     text.setColor(sf::Color::Black);
     text.setCharacterSize(30);
-    text.setPosition(180,100);
-    text.setString(status);
+    text.setPosition(180,50);
+    text.setString(game->status);
 
     sf::Text text1;
-    text1.setFont(font);
+    text1.setFont(font2);
     text1.setColor(sf::Color::Black);
-    text1.setCharacterSize(20);
-    text1.setPosition(275,185);
+    text1.setCharacterSize(24);
+    text1.setPosition(270,180);
     text1.setString("play as a server");
 
     sf::Text text2;
-    text2.setFont(font);
+    text2.setFont(font2);
     text2.setColor(sf::Color::Black);
-    text2.setCharacterSize(20);
-    text2.setPosition(275,290);
+    text2.setCharacterSize(24);
+    text2.setPosition(270,290);
     text2.setString("play as a client");
 
     sf::RectangleShape shape(sf::Vector2f(200, 100));
     shape.setPosition(250,145);
-    shape.setFillColor(sf::Color(88, 214, 141));
+    shape.setFillColor(sf::Color(  198, 82, 248  ));
     shape.setOutlineThickness(5);
-    shape.setOutlineColor(sf::Color( 247, 220, 111 ));
+    shape.setOutlineColor(sf::Color(   16, 225, 171
+    ));
 
     sf::RectangleShape shape2(sf::Vector2f(200, 100));
     shape2.setPosition(250,260);
-    shape2.setFillColor(sf::Color(88, 214, 141));
+    shape2.setFillColor(sf::Color( 198, 82, 248  ));
     shape2.setOutlineThickness(5);
-    shape2.setOutlineColor(sf::Color( 247, 220, 111 ));
+    shape2.setOutlineColor(sf::Color(   16, 225, 171 ));
 
     window->draw(shape);
     window->draw(shape2);
@@ -79,7 +86,7 @@ void render_type(sf::RenderWindow *window){ //the beginning page //PAGE 1
 
 }
 
-void render_player(sf::RenderWindow *window, Game *game){ //the player page //PAGE 2
+void render_player(sf::RenderWindow *window, Game *game,Network *network){ //the player page //PAGE 2
     background(window);
     //status
     sf::Font font;
@@ -96,9 +103,12 @@ void render_player(sf::RenderWindow *window, Game *game){ //the player page //PA
     sf::Text ls;
     ls.setFont(font);
     ls.setColor(sf::Color::Black);
-    ls.setCharacterSize(24);
+    ls.setCharacterSize(16);
     ls.setPosition(220,70);
-    ls.setString(game->list);
+    stringstream str;
+    string list_text=network->socket->getRemoteAddress().toString();
+    if(list_text=="0.0.0.0")list_text="empty!";
+    ls.setString("people in network:\n\n"+game->list+"\nloading...\n\nAvailable player:\n"+list_text);
 
     sf::Text text1;
     text1.setFont(font);
@@ -140,6 +150,19 @@ void render_game(sf::RenderWindow *window,Game game){ //the game page //PAGE 3
     text.setCharacterSize(24);
     text.setPosition(180,10);
     text.setString(game.status);
+
+    sf::Text command;
+    command.setFont(font);
+    command.setColor(sf::Color(  150, 46, 194  ));
+    command.setCharacterSize(16);
+    command.setPosition(20,30);
+    string msg="";
+    if(game.turn==1){
+        msg="Your turn!";
+    } else{
+        msg="Please wait!";
+    }
+    command.setString(msg);
 
     sf::RectangleShape shape0(sf::Vector2f(366, 187));
     shape0.setPosition(165,50);
@@ -349,6 +372,7 @@ void render_game(sf::RenderWindow *window,Game game){ //the game page //PAGE 3
 
 
     window->draw(text);
+    window->draw(command);
     window->draw(shape0);
     window->draw(uplefthole);
     window->draw(downlefthole);
