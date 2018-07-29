@@ -24,6 +24,7 @@ public:
     int turn;
     bool is_new(string);
     void move();
+    float spin;
 
 };
 
