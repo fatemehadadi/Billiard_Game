@@ -154,14 +154,9 @@ void render_game(sf::RenderWindow *window,Game game){ //the game page //PAGE 3
     sf::Text command;
     command.setFont(font);
     command.setColor(sf::Color(  150, 46, 194  ));
-    command.setCharacterSize(16);
+    command.setCharacterSize(12);
     command.setPosition(20,30);
-    string msg="";
-    if(game.turn==1){
-        msg="Your turn!";
-    } else{
-        msg="Please wait!";
-    }
+    string msg=game.motion;
     command.setString(msg);
 
     sf::RectangleShape shape0(sf::Vector2f(366, 187));
@@ -250,28 +245,28 @@ void render_game(sf::RenderWindow *window,Game game){ //the game page //PAGE 3
 
     float r=2.75;
     int i=2;
-    white_ball.setPosition(game.ball[0]->p[0],game.ball[0]->p[1]);
-    yellow_ball.setPosition(game.ball[1]->p[0],game.ball[1]->p[1]);
-    pink_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red1_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red2_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red3_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red4_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red5_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red6_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red7_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red8_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red9_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red10_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red11_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red12_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red13_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red14_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    red15_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    green_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    blue_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    brown_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
-    black_ball.setPosition(game.ball[i]->p[0],game.ball[i]->p[1]);i++;
+    white_ball.setPosition(game.ball[0]->p[0]-r,game.ball[0]->p[1]-r);
+    yellow_ball.setPosition(game.ball[1]->p[0]-r,game.ball[1]->p[1]-r);
+    pink_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red1_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red2_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red3_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red4_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red5_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red6_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red7_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red8_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red9_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red10_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red11_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red12_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red13_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red14_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    red15_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    green_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    blue_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    brown_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
+    black_ball.setPosition(game.ball[i]->p[0]-r,game.ball[i]->p[1]-r);i++;
 
     sf::CircleShape yellow,pink,red,blue,green,brown,black;
     yellow.setRadius(20);
