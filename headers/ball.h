@@ -14,9 +14,11 @@ public:
     float speed;
     float fa;
     float p[2];
-    float v[2];
+    double v[2];
     float a[2];
+    float fic=0.3;
     bool is_stoped();
+    void friction();
 };
 
 #endif //SNOOKER_BALL_H
