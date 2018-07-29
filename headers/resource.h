@@ -7,13 +7,14 @@
 
 #include "game.h"
 #include <string>
+#include <SFML/Network.hpp>
 
 class Resource {
 public:
     Resource(Game* game);
 
-    void set(std::string);
-    std::string get();
+    void set(sf::Packet&);
+    sf::Packet get();
 private:
     Game* game;
 };
