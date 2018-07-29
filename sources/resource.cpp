@@ -3,13 +3,22 @@
 //
 
 #include "../headers/resource.h"
-#include <sstream>
+
+sf::Packet& operator <<(sf::Packet& packet, Ball *&ball)
+{
+    return packet << ball->color<<ball->score<<ball->p[0]<<ball->p[1]<<ball->v[0]<<ball->v[1]<<ball->a[0]<<ball->a[1];
+}
+
+sf::Packet& operator >>(sf::Packet& packet, Ball *&ball)
+{
+    return packet >> ball->color>>ball->score>>ball->p[0]>>ball->p[1]>>ball->v[0]>>ball->v[1]>>ball->a[0]>>ball->a[1];
+}
 
 Resource::Resource(Game *game) {
     this->game = game;
 }
 
-void Resource::set(std::string str) {
+void Resource::set(sf::Packet &pack) { //for network.set
     /*std::stringstream inp(str);
 
     float p_position, ball_x, ball_y;
@@ -18,11 +27,13 @@ void Resource::set(std::string str) {
     this->game->get_ball()->set_x(ball_x);
     this->game->get_ball()->set_y(ball_y);
      */
-    std::cout<<str<<"***"<<"is set"<<endl;
-    return;
+    string str;
+    pack>>str;
+    for(int i=0;i<22;i++){
+        pack>>game->ball[i];
+    }
 }
-
-std::string Resource::get() {
+sf::Packet Resource::get() {  //for network.send
     /*std::stringstream res;
 
     res << this->game->get_positions(0) << " "
@@ -30,5 +41,12 @@ std::string Resource::get() {
         << this->game->get_ball()->get_y();
 
     return res.str();*/
-    return "is get";
+
+    sf::Packet pack;
+    pack<<"ok";
+    for(int i=0;i<22;i++){
+        pack<<game->ball[i];
+    }
+    pack>>game->spin;
+    return pack;
 }
