@@ -56,6 +56,7 @@ int main() {
     game.is_started= false;
     game.is_chosen= false;
     bool not_listening=true;
+    double speed,x,y;
     Resource* resource = new Resource(&game);
     Network* network;
 
@@ -84,9 +85,15 @@ int main() {
                             network = new Network(resource);
                             network->is_server=true;
                             game.turn=1;
+                            game.motion="Your Turn!\nSelect the speed:";
+                            game.choose_color=false;
+                            game.choose_dir=false;
+                            game.choose_side=false;
+                            game.choose_speed=false;
                             network->listen(&game);
                             game.is_listening= false;
                             game.status="choose your partner:";
+
                         }
                         //play as client
                         if((event.mouseButton.x>250 && event.mouseButton.x<450)&&(event.mouseButton.y>250 && event.mouseButton.y<350)){
@@ -94,6 +101,11 @@ int main() {
                             game.is_listening=true;
                             game.turn=-1;
                             game.status="choose your partner:";
+                            game.motion="Please wait!";
+                            game.choose_color=false;
+                            game.choose_dir=false;
+                            game.choose_side=false;
+                            game.choose_speed=false;
                             network = new Network(resource, "127.0.0.1");
                             network->is_server=false;
                             network->connect(&game);
@@ -119,6 +131,7 @@ int main() {
                                 game.is_chosen = false;
                                 delete network;
                                 game.status = "choose again";
+
                             }
                             else if(game.is_listening== false){
                                 game.is_listening=true;
@@ -143,16 +156,42 @@ int main() {
                         std::cout << "mouse x: " << event.mouseButton.x << std::endl;
                         std::cout << "mouse y: " << event.mouseButton.y << std::endl;
                         if(game.bulls_stoped()){
-                            if(game.choose_color==false){
-
+                            if(game.choose_speed==false){
+                                if((event.mouseButton.x>400 && event.mouseButton.x<600)&&(event.mouseButton.y>440 && event.mouseButton.y<460)){
+                                    speed=(event.mouseButton.x-400)/20;
+                                    game.motion+=to_string((int)speed)+"\nchoose direction:";
+                                    game.choose_speed=true;
+                                }
                             }
                             else if(game.choose_dir==false){
-
+                                if(sqrt(pow(event.mouseButton.x-520,2)+pow(event.mouseButton.y-330,2))<60){
+                                    x=event.mouseButton.x;
+                                    y=event.mouseButton.y;
+                                    game.motion+="\nchosse side:";
+                                    game.choose_dir=true;
+                                }
                             }
                             else if(game.choose_side==false){
-
+                                if(sqrt(pow(event.mouseButton.x-520,2)+pow(event.mouseButton.y-330,2))<60){
+                                    if(x==520){
+                                        game.motion="";
+                                        game.ball[0]->v[0]=0;
+                                        game.ball[0]->v[1]=speed;
+                                        if(y<330)game.ball[0]->v[1]*=-1;
+                                        game.spin=(520-event.mouseButton.x)/(60);
+                                        game.choose_side=true;
+                                    }
+                                    else{
+                                        double teta=atan((y-330)/(x-520));
+                                        game.motion="";
+                                        game.ball[0]->v[0]=1*speed*cos(teta);
+                                        game.ball[0]->v[1]=1*speed*sin(teta);
+                                        game.spin=(520-event.mouseButton.x)/(60);
+                                        game.choose_side=true;
+                                    }
+                                }
                             }
-                            else if(game.choose_speed==false){
+                            if(game.choose_color){
 
                             }
                         }
@@ -171,9 +210,17 @@ int main() {
             not_listening=false;
         }
         if(game.is_started){
-            network->send();
-            network->receive();
+            if(game.turn==1){ //if is your turn
+                network->send();
+            }
+            else{ //if is next one turn
+                network->receive();
+            }
         }
+        for(int i=0;i<22;i++){
+            game.ball[i]->friction();
+        }
+        game.check();
         window.clear();
         if(game.is_started){ //if the game is started
             render_game(&window,game);
