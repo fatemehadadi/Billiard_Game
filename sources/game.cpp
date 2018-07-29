@@ -8,6 +8,7 @@
 Game::Game() {
     me=new Player(0,"0");
     rival=new Player(0,"0");
+    spin=0;
     float r=2.75;
     float x=170+(356/2+356-32.4)/2,
             y=177/2+55;
@@ -60,7 +61,7 @@ void Game::move() { //move the balls or play orders
 
         }
     }
-    else if(this->is_chosen){
+    else if(this->is_chosen ){
         sf::UdpSocket socket;
 
         // bind the socket to a port
