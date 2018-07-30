@@ -75,7 +75,6 @@ void Network::receive() {
 
         this->resource->set(message);
     }*/
-    sf::sleep(sf::milliseconds(50));
     sf::Packet pack;
     this->socket->receive(pack);
     this->resource->set(pack);
