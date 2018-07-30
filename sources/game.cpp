@@ -6,12 +6,17 @@
 #include <SFML/Network.hpp>
 #include <algorithm>
 Game::Game() {
+    //playes
     me=new Player(0,"0");
     rival=new Player(0,"0");
+    //spin for white ball
     spin=0;
+    //radius of all balls
     float r=2.75;
+    //place of center of half circle in board
     float x=170+(356/2+356-32.4)/2,
             y=177/2+55;
+    //place the balls
     ball=new Ball *[22];
     ball[0]=new Ball("white",0,263-40,143) ;
     ball[1]=new Ball("yellow",2,170+73.7,177/2+55+29);
@@ -36,13 +41,14 @@ Game::Game() {
     ball[20]=new Ball("brown",4,170+73.7,177/2+55);
     ball[21]=new Ball("black",7,170+356-32.4,177/2+55);
     turn =1;
+    //flags for shooting
     choose_color= false;
     choose_dir= false;
     choose_side=false;
     choose_speed=false;
 
 }
-bool Game::bulls_stoped() {
+bool Game::bulls_stoped() { //check if all balls are stoped
     for(int i=0;i<22;i++){
         if (ball[i]->v[0]!=0 || ball[i]->v[1]!=0){
             return false;
@@ -50,9 +56,12 @@ bool Game::bulls_stoped() {
     }
     return true;
 }
-bool Game::collision(float place[][3]){
+
+bool Game::collision(float place[][3])
+{ //check if there is collision
     for(int i=0;i<22;i++){
-        for(int j=i+1;j<22;j++){
+        for(int j=i+1;j<22;j++)
+        {
             //if there is collision
             if((place[i][0]-place[j][0])*(place[i][0]-place[j][0])+(place[i][1]-place[j][1])*(place[i][1]-place[j][1])<(5.5)*(5.5)){
                 return true;
@@ -61,9 +70,12 @@ bool Game::collision(float place[][3]){
     }
     return false;
 }
-float* Game::colli_place(Ball *b1,Ball *b2,float x,float y){
+
+float* Game::colli_place(Ball *b1,Ball *b2,float x,float y) //find the right place for balls
+{
     float *f=new float [2];
-    if(b1->v[0]*b1->v[0]<0.0001){
+    if(b1->v[0]*b1->v[0]<0.0001)
+    {
         f[0]=b1->p[0];
         f[1]=sqrt(pow(5.5,2)+pow(b1->p[0]-x,2));
         if(b1->v[1]>0)f[1]*=-1;
@@ -75,13 +87,14 @@ float* Game::colli_place(Ball *b1,Ball *b2,float x,float y){
         float b=-2*x-2*m*(h-y);
         float c=x*x+pow(h-y,2)-pow(5.5,2);
         float delta=pow(b,2)-4*a*c;
-        if(delta<-0.001){
-            cout<<"errror!";
-            f[0]=370;
-            f[1]=80;
+        if(delta<-0.01){
+            cout<<"errrooooor!";
+            float r=5.5/2;
+            f[0]=x+2*r;
+            f[1]=y+2*r;
             return f;
         }
-        else if(pow(delta,2)<0.01){
+        else if(pow(delta,2)<=0.0001){
             f[0]=-b/(2*a);
         }
         else{
@@ -96,11 +109,14 @@ float* Game::colli_place(Ball *b1,Ball *b2,float x,float y){
     }
     return f;
 }
-bool Game::not_in_hole(float x,float y){
+
+bool Game::not_in_hole(float x,float y) //if there are not in holes
+{
     //check all 6 holes
     return false;
 }
-bool Game::overborder(float place[][3]){
+bool Game::overborder(float place[][3]) //if ball are over the borders
+{
     float r=5.5/2;
     for(int i=0;i<22;i++){
         if(not_in_hole(place[i][0],place[i][1])){
@@ -123,8 +139,9 @@ bool Game::overborder(float place[][3]){
 
 void Game::move() { //move the balls or play orders
     if(this->is_started){
+        sf::sleep(sf::milliseconds(5));
         if(bulls_stoped() && this->turn==1){
-            if(choose_speed){
+            if(choose_side){
             }
         }
         else if(bulls_stoped()==false){
@@ -176,11 +193,12 @@ void Game::move() { //move the balls or play orders
                     //if there is collision
                     if(place[i][2]>0){
                         int t= static_cast<int>(place[i][2]);
+                        cout<<this->ball[i]->color<<" "<<this->ball[t]->color<<"\n";
                         double vi1=sqrt(pow(ball[i]->v[0],2)+pow(ball[i]->v[1],2));
                         double vi2=sqrt(pow(ball[t]->v[0],2)+pow(ball[t]->v[1],2));
                         if(vi1>vi2){
                             //find place of collision
-                            float *f=colli_place(ball[i],ball[t],place[t][0],place[t][0]);
+                            float *f=colli_place(ball[i],ball[t],place[t][0],place[t][1]);
                             float x=f[0];
                             float y=f[1];
                             //insert new place in array of all places
@@ -414,6 +432,23 @@ void Game::move() { //move the balls or play orders
 
             }
             for(int i=0;i<22;i++){
+                double r=5.5/2;
+                if(place[i][1]<55+r){
+                    place[i][1]+=2*(55+r-place[i][1]);
+                    ball[i]->v[1]*=-1;
+                }
+                else if(place[i][1]>55+177-r){
+                    place[i][1]+=2*(55+177-r-place[i][1]);
+                    ball[i]->v[1]*=-1;
+                };
+                if(place[i][0]<170+r){
+                    place[i][0]+=2*(170+r-place[i][0]);
+                    ball[i]->v[0]*=-1;
+                }
+                else if(place[i][0]>170+356-r){
+                    place[i][0]+=2*(170+356-r-place[i][0]);
+                    ball[i]->v[0]*=-1;
+                };
                 this->ball[i]->p[0]=place[i][0];
                 this->ball[i]->p[1]=place[i][1];
             }
@@ -452,12 +487,12 @@ void Game::move() { //move the balls or play orders
                     // error...
                     cout<<"cant receive!\n";
                 }
-                string msg;
+                string msgg;
                 for(int i=0;data[i]!='\0';i++){
-                    msg+=data[i];
+                    msgg+=data[i];
                 }
-                if(is_new(msg)){
-                    this->list+=msg+"\n";
+                if(is_new(msgg)){
+                    this->list+=msgg+"\n";
                 }
             }
         }
@@ -465,7 +500,7 @@ void Game::move() { //move the balls or play orders
 
     }
 }
-bool Game::is_new(string m) {
+bool Game::is_new(string m) { //check new player
     string temp;
     temp="";
     int k=1;
@@ -481,6 +516,13 @@ bool Game::is_new(string m) {
     }
     return true;
 }
-void Game::check() {
-
+void Game::check() { //check next turn
+    if(choose_side && bulls_stoped()){
+        turn*=-1;
+        this->motion="Please wait!";
+        choose_side=false;
+        choose_dir=false;
+        choose_speed=false;
+        choose_color=false;
+    }
 }
