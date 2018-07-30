@@ -28,7 +28,6 @@ public:
     float* colli_place(Ball*,Ball*,float,float);
     bool not_in_hole(float,float);
     bool overborder(float [][3]);
-
     void move();
     float spin;
 
