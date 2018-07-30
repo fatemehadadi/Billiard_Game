@@ -16,7 +16,8 @@ std::string status;
 using namespace sf;
 using namespace std;
 
-void background(sf::RenderWindow *window){
+void background(sf::RenderWindow *window) //draw backgroud white
+{
     sf::RectangleShape shape(sf::Vector2f(700, 500));
     shape.setPosition(0,0);
     shape.setFillColor(sf::Color::White);
