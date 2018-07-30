@@ -12,7 +12,6 @@
 class Resource {
 public:
     Resource(Game* game);
-
     void set(sf::Packet&);
     sf::Packet get();
 private:
