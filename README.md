@@ -1,1 +1,2 @@
-an interesting p2p billiard game
+an interesting peer to peer billiard game by C++ and SFML
+
